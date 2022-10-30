@@ -35,7 +35,15 @@ trait ExceptionTrait
             return $this->httpResponseMsg($e);
          }
 
+
+
+         return parent::render($request, $e);
 	}
+
+
+
+
+
 
 
 

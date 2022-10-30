@@ -14,6 +14,9 @@ use App\Http\Resources\Product\ProductCollection;
 
 use Symfony\Component\HttpFoundation\Response;
 
+use App\Exceptions\ProductNotBelongsToUser;
+use Auth;
+
 class ProductController extends Controller
 {
     
@@ -105,7 +108,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         
-        // return $product;
+        $this->productUserCheck($product);
 
        $request['detail'] = $request->product_details;
        unset($request['product_details']);
@@ -134,7 +137,21 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        $this->productUserCheck($product);
+
         $product -> delete();
         return response(null,Response::HTTP_NO_CONTENT);
+    }
+
+
+
+    public function productUserCheck($product){
+
+        if(Auth::id() != $product->user_id){
+
+            throw new ProductNotBelongsToUser;
+            
+        }
+
     }
 }
